@@ -1,0 +1,500 @@
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Manrope:wght@200..800&display=swap");
+
+    /* RESET BÁSICO (Mantenha, mas cuidado com conflitos) */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* --- CORREÇÃO: Adicionei .spotlight antes dos seletores --- */
+
+    /* Aplica apenas nas imagens DENTRO da spotlight */
+    .spotlight img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Aplica apenas no H1 DENTRO da spotlight */
+    .spotlight h1 {
+        font-size: 4rem;
+        font-weight: 500;
+        line-height: 1;
+        font-family: "Manrope", sans-serif;
+    }
+
+    .p-spot {
+        font-size: 1.5rem;
+        font-weight: 500;
+        line-height: 1;
+        font-family: "Geist Mono", monospace;
+    }
+
+    .p-spot-2 {
+        font-size: 2.5rem;
+        font-weight: 500;
+        line-height: 1;
+        font-family: "Manrope", sans-serif;
+    }
+
+    /* Aplica apenas nessa section específica */
+    section.spotlight {
+        position: relative;
+        width: 100vw;
+        height: 100svh;
+        overflow: hidden;
+        background-color: black;
+    }
+
+    .spotlight-intro-text-wrapper {
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .spotlight-intro-text {
+        flex: 1;
+        position: relative;
+        will-change: transform;
+        color: white;
+    }
+
+    .spotlight-intro-text:nth-child(1) {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .spotlight-bg-img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        transform-origin: center center;
+        will-change: transform;
+        z-index: 1;
+    }
+
+    /* CORREÇÃO DE ALINHAMENTO (Escopado) */
+    .spotlight-bg-img img,
+    .slider-images img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform-origin: center;
+        will-change: transform, opacity;
+        border-radius: 5rem;
+    }
+
+    /* Slider Styles */
+    .slider-images {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        opacity: 0;
+    }
+
+    .slider-images::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.35);
+    }
+
+    .slider-title {
+        position: absolute;
+        top: 50%;
+        left: 5rem;
+        transform: translateY(-50%);
+        width: 50%;
+        color: #fff;
+        pointer-events: none;
+        z-index: 3;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .slider-desc {
+        font-family: "Geist Mono", monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        max-width: 400px;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .slider-btn {
+        width: fit-content;
+        padding: 0.75rem 1.5rem;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 999px;
+        font-family: "Manrope", sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        cursor: pointer;
+        pointer-events: auto;
+        text-decoration: none;
+        display: inline-block;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+        margin-top: 0.5rem;
+    }
+
+    .slider-btn:hover {
+        transform: scale(1.05);
+        background-color: #f0f0f0;
+    }
+
+    .slider-indicator {
+        position: absolute;
+        top: 50%;
+        right: 2rem;
+        transform: translateY(-50%);
+        z-index: 3;
+        opacity: 0;
+    }
+
+    .slider-indices {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+    }
+
+    .slider-indices p {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: #fff;
+        font-family: "Geist Mono", monospace;
+        font-size: 0.85rem;
+    }
+
+    .index {
+        position: relative;
+        width: 1.25rem;
+        display: flex;
+        justify-content: flex-end;
+        will-change: opacity;
+    }
+
+    .marker {
+        position: relative;
+        width: 0.75rem;
+        height: 1px;
+        background-color: #fff;
+        transform-origin: right;
+        will-change: transform;
+        transform: scaleX(0);
+    }
+
+    .slider-progress-bar {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1px;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .slider-progress {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%) scaleY(0);
+        width: 3px;
+        height: 100%;
+        background-color: #fff;
+        transform-origin: top;
+        will-change: transform;
+    }
+
+    .line {
+        position: relative;
+        display: block;
+        will-change: transform;
+    }
+
+    @media (max-width: 1000px) {
+        .spotlight h1 {
+            /* Escopado aqui também */
+            font-size: 2rem;
+        }
+
+        .slider-title {
+            top: 5rem;
+            left: 0;
+            transform: none;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .slider-indicator {
+            top: unset;
+            transform: none;
+            bottom: 2rem;
+        }
+    }
+
+    .slider-badge {
+        width: fit-content;
+        padding: 0.35rem 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-family: "Geist Mono", monospace;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border-radius: 4px;
+        margin-bottom: 0.75rem;
+        display: inline-block;
+        line-height: 1;
+    }
+</style>
+
+<section class="spotlight">
+    <div class="spotlight-intro-text-wrapper">
+        <div class="spotlight-intro-text">
+            <p class="p-spot-2">Nossos</p>
+        </div>
+        <div class="spotlight-intro-text">
+            <p class="p-spot-2">Cases</p>
+        </div>
+    </div>
+
+    <div class="spotlight-bg-img">
+        <img src="https://momentvm.io/wp-content/uploads/2025/12/Mexc.webp" alt="" />
+    </div>
+
+    <div class="slider-images"></div>
+
+    <div class="slider-title"></div>
+
+    <div class="slider-indicator">
+        <div class="slider-indices"></div>
+
+        <div class="slider-progress-bar">
+            <div class="slider-progress"></div>
+        </div>
+    </div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.19/dist/lenis.min.js"></script>
+<script type="module">
+    document.addEventListener("DOMContentLoaded", () => {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- Data ---
+        const spotlightItems = [
+            { name: "Mexc", img: "https://momentvm.io/wp-content/uploads/2025/12/Mexc.webp", tag: "Cases Momentvm" },
+            { name: "Blockchain Rio", img: "https://momentvm.io/wp-content/uploads/2025/12/blockchain-rio.webp", tag: "Stands" },
+            { name: "Metamask", img: "https://momentvm.io/wp-content/uploads/2025/12/MetaMaks.webp", tag: "NFTs" },
+            { name: "Marketing Pro", img: "https://momentvm.io/wp-content/uploads/2025/12/Mexc.webp", tag: "Ações Marketing" },
+            { name: "Skins & Gifts", img: "https://momentvm.io/wp-content/uploads/2025/12/blockchain-rio.webp", tag: "Brindes" },
+        ];
+
+        const slides = spotlightItems.map(item => ({
+            title: item.name,
+            image: item.img,
+            tag: item.tag,
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            link: "#"
+        }));
+
+        // --- Lenis Setup ---
+        const lenis = new Lenis();
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+
+        // --- Elements ---
+        const introTextElements = document.querySelectorAll(".spotlight-intro-text");
+        const spotlightBgImg = document.querySelector(".spotlight-bg-img");
+        const spotlightBgImgEl = document.querySelector(".spotlight-bg-img img");
+
+        const sliderImages = document.querySelector(".slider-images");
+        const sliderTitle = document.querySelector(".slider-title");
+        const sliderIndicator = document.querySelector(".slider-indicator");
+        const sliderIndices = document.querySelector(".slider-indices");
+        const progressBar = document.querySelector(".slider-progress");
+
+        // --- Slider Setup ---
+        let activeSlide = 0;
+
+        function createIndices() {
+            sliderIndices.innerHTML = "";
+            slides.forEach((_, index) => {
+                const indexNum = (index + 1).toString().padStart(2, "0");
+                const indicatorElement = document.createElement("p");
+                indicatorElement.innerHTML = `<span class="marker"></span><span class="index">${indexNum}</span>`;
+                sliderIndices.appendChild(indicatorElement);
+
+                if (index === 0) {
+                    gsap.set(indicatorElement.querySelector(".index"), { opacity: 1 });
+                    gsap.set(indicatorElement.querySelector(".marker"), { scaleX: 1 });
+                } else {
+                    gsap.set(indicatorElement.querySelector(".index"), { opacity: 0.35 });
+                    gsap.set(indicatorElement.querySelector(".marker"), { scaleX: 0 });
+                }
+            });
+        }
+
+        function animateIndicators(index) {
+            const indicators = sliderIndices.querySelectorAll("p");
+            indicators.forEach((indicator, i) => {
+                const markerElement = indicator.querySelector(".marker");
+                const indexElement = indicator.querySelector(".index");
+
+                if (i === index) {
+                    gsap.to(indexElement, { opacity: 1, duration: 0.3, ease: "power2.out" });
+                    gsap.to(markerElement, { scaleX: 1, duration: 0.3, ease: "power2.out" });
+                } else {
+                    gsap.to(indexElement, { opacity: 0.5, duration: 0.3, ease: "power2.out" });
+                    gsap.to(markerElement, { scaleX: 0, duration: 0.3, ease: "power2.out" });
+                }
+            });
+        }
+
+        function animateNewContent(index) {
+            sliderTitle.innerHTML = `
+                <div class="slider-badge">${slides[index].tag}</div>
+                <h1>${slides[index].title}</h1>
+                <p class="slider-desc">${slides[index].description}</p>
+                <a href="${slides[index].link}" class="slider-btn">Ver Case</a>
+            `;
+
+            const elements = sliderTitle.children;
+            gsap.set(elements, { y: 20, opacity: 0 });
+            gsap.to(elements, {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power3.out"
+            });
+        }
+
+        function animateNewSlide(index) {
+            const newSliderImage = document.createElement("img");
+            newSliderImage.src = slides[index].image;
+            newSliderImage.alt = `Slide ${index + 1}`;
+
+            // Garante que a nova imagem do slider nasça sem transformações
+            gsap.set(newSliderImage, { opacity: 0, scale: 1.1, x: 0, y: 0 });
+            sliderImages.appendChild(newSliderImage);
+
+            gsap.to(newSliderImage, { opacity: 1, duration: 0.5, ease: "power2.out" });
+            gsap.to(newSliderImage, { scale: 1, duration: 1, ease: "power2.out" });
+
+            const allImages = sliderImages.querySelectorAll("img");
+            if (allImages.length > 2) {
+                const removeCount = allImages.length - 2;
+                for (let i = 0; i < removeCount; i++) {
+                    sliderImages.removeChild(allImages[i]);
+                }
+            }
+
+            animateNewContent(index);
+            animateIndicators(index);
+        }
+
+        createIndices();
+
+        // Initial setup
+        const initialImg = document.createElement("img");
+        initialImg.src = slides[0].image;
+        document.querySelector(".spotlight-bg-img img").src = slides[0].image;
+
+        // Força o estado inicial limpo para a primeira imagem do slider
+        gsap.set(initialImg, { opacity: 1, scale: 1, x: 0, y: 0 });
+        sliderImages.appendChild(initialImg);
+
+        sliderTitle.innerHTML = `
+            <div class="slider-badge">${slides[0].tag}</div>
+            <h1>${slides[0].title}</h1>
+            <p class="slider-desc">${slides[0].description}</p>
+            <a href="${slides[0].link}" class="slider-btn">Ver Case</a>
+        `;
+
+        // --- CONTROLE INICIAL VIA JS ---
+        // Define os estados iniciais aqui para garantir sincronia total
+        gsap.set(spotlightBgImg, { scale: 0 });
+        // A escala de 1.5 que estava no CSS agora é definida aqui
+        gsap.set(spotlightBgImgEl, { scale: 1.5, x: 0, y: 0 });
+        gsap.set(sliderImages, { opacity: 0 });
+
+        // --- Unified ScrollLogic ---
+        const ZOOM_PORTION = 0.25;
+        const SLIDER_PORTION = 1 - ZOOM_PORTION;
+
+        ScrollTrigger.create({
+            trigger: ".spotlight",
+            start: "top top",
+            end: "+=2500",
+            pin: true,
+            scrub: 1,
+            onUpdate: (self) => {
+                const progress = self.progress;
+
+                if (progress <= ZOOM_PORTION) {
+                    // --- ZOOM PHASE ---
+                    const zoomProgress = progress / ZOOM_PORTION;
+
+                    const moveDistance = window.innerWidth * 0.6;
+                    gsap.set(introTextElements[0], { x: -zoomProgress * moveDistance, opacity: 1 - zoomProgress });
+                    gsap.set(introTextElements[1], { x: zoomProgress * moveDistance, opacity: 1 - zoomProgress });
+
+                    gsap.set(spotlightBgImg, { transform: `scale(${zoomProgress})` });
+                    gsap.set(spotlightBgImgEl, { transform: `scale(${1.5 - zoomProgress * 0.5})` });
+
+                    gsap.set([sliderImages, sliderTitle, sliderIndicator], { opacity: 0 });
+
+                } else {
+                    // --- SLIDER PHASE ---
+                    const sliderProgress = (progress - ZOOM_PORTION) / SLIDER_PORTION;
+
+                    gsap.set(spotlightBgImg, { transform: "scale(1)" });
+                    gsap.set(spotlightBgImgEl, { transform: "scale(1)" });
+
+                    // Transição direta, sem fade gradual, pois o alinhamento está corrigido.
+                    gsap.set(sliderImages, { opacity: 1 });
+                    gsap.set([sliderTitle, sliderIndicator], { opacity: 1 });
+
+                    gsap.set(progressBar, { scaleY: sliderProgress });
+
+                    const currentSlide = Math.floor(sliderProgress * slides.length);
+
+                    if (activeSlide !== currentSlide && currentSlide < slides.length && currentSlide >= 0) {
+                        activeSlide = currentSlide;
+                        animateNewSlide(activeSlide);
+                    }
+                }
+            }
+        });
+    })
+</script>

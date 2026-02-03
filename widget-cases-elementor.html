@@ -84,7 +84,9 @@
 
     /* CORREÇÃO DE ALINHAMENTO (Escopado) */
     .spotlight-bg-img img,
-    .slider-images img {
+    .spotlight-bg-img video,
+    .slider-images img,
+    .slider-images video {
         position: absolute;
         top: 0;
         left: 0;
@@ -137,7 +139,7 @@
         font-family: "Geist Mono", monospace;
         font-size: 0.9rem;
         line-height: 1.5;
-        max-width: 400px;
+        max-width: 650px;
         color: rgba(255, 255, 255, 0.8);
     }
 
@@ -311,18 +313,37 @@
 
         // --- Data ---
         const spotlightItems = [
-            { name: "Mexc", img: "https://momentvm.io/wp-content/uploads/2025/12/Mexc.webp", tag: "Cases Momentvm" },
-            { name: "Blockchain Rio", img: "https://momentvm.io/wp-content/uploads/2025/12/blockchain-rio.webp", tag: "Stands" },
-            { name: "Metamask", img: "https://momentvm.io/wp-content/uploads/2025/12/MetaMaks.webp", tag: "NFTs" },
-            { name: "Marketing Pro", img: "https://momentvm.io/wp-content/uploads/2025/12/Mexc.webp", tag: "Ações Marketing" },
-            { name: "Skins & Gifts", img: "https://momentvm.io/wp-content/uploads/2025/12/blockchain-rio.webp", tag: "Brindes" },
+            {
+                name: "Community Builder Night - Metamask",
+                media: "https://raw.githubusercontent.com/igor-dev7/momentvm-final/main/Video%20Igor%20nftalks.mp4",
+                type: "video",
+                tag: "Eventos",
+                desc: ""
+            },
+            {
+                name: "MEXC - Blockchain Rio",
+                media: "https://raw.githubusercontent.com/igor-dev7/momentvm-final/main/After%20Movie.webm",
+                type: "video",
+                tag: "Eventos",
+                desc: ""
+            },
+            {
+                name: "BITRUE - BRINDES CARDANO SUMMIT",
+                media: "https://momentvm.io/wp-content/uploads/2026/02/MAT06284-scaled.jpg",
+                type: "image",
+                tag: "Brindes",
+                pos: "center 20%",
+                desc: "Tivemos a honra de trabalhar lado a lado com a Bitrue no Cardano Tech Summit, no Museu do Amanhã, entregando uma ativação que uniu propósito, agilidade e visão de futuro.\n\nTransformamos presença em experiência do digital ao real com swags exclusivos, design estratégico e uma execução que reflete o que acreditamos: o Web3 se vive, não se explica.\n\nParceiros que entendem o jogo constroem juntos.\nObrigado, Bitrue, pela confiança e energia em cada etapa dessa entrega."
+            },
         ];
 
         const slides = spotlightItems.map(item => ({
             title: item.name,
-            image: item.img,
+            image: item.media,
+            type: item.type,
             tag: item.tag,
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            pos: item.pos || "center",
+            description: item.desc,
             link: "#"
         }));
 
@@ -385,7 +406,6 @@
                 <div class="slider-badge">${slides[index].tag}</div>
                 <h1>${slides[index].title}</h1>
                 <p class="slider-desc">${slides[index].description}</p>
-                <a href="${slides[index].link}" class="slider-btn">Ver Case</a>
             `;
 
             const elements = sliderTitle.children;
@@ -400,22 +420,33 @@
         }
 
         function animateNewSlide(index) {
-            const newSliderImage = document.createElement("img");
-            newSliderImage.src = slides[index].image;
-            newSliderImage.alt = `Slide ${index + 1}`;
+            let newMedia;
+            if (slides[index].type === "video") {
+                newMedia = document.createElement("video");
+                newMedia.src = slides[index].image;
+                newMedia.autoplay = true;
+                newMedia.loop = true;
+                newMedia.muted = true;
+                newMedia.playsInline = true;
+            } else {
+                newMedia = document.createElement("img");
+                newMedia.src = slides[index].image;
+            }
+            newMedia.alt = `Slide ${index + 1}`;
+            newMedia.style.objectPosition = slides[index].pos;
 
-            // Garante que a nova imagem do slider nasça sem transformações
-            gsap.set(newSliderImage, { opacity: 0, scale: 1.1, x: 0, y: 0 });
-            sliderImages.appendChild(newSliderImage);
+            // Garante que a nova mídia do slider nasça sem transformações
+            gsap.set(newMedia, { opacity: 0, scale: 1.1, x: 0, y: 0 });
+            sliderImages.appendChild(newMedia);
 
-            gsap.to(newSliderImage, { opacity: 1, duration: 0.5, ease: "power2.out" });
-            gsap.to(newSliderImage, { scale: 1, duration: 1, ease: "power2.out" });
+            gsap.to(newMedia, { opacity: 1, duration: 0.5, ease: "power2.out" });
+            gsap.to(newMedia, { scale: 1, duration: 1, ease: "power2.out" });
 
-            const allImages = sliderImages.querySelectorAll("img");
-            if (allImages.length > 2) {
-                const removeCount = allImages.length - 2;
+            const allMedia = sliderImages.querySelectorAll("img, video");
+            if (allMedia.length > 2) {
+                const removeCount = allMedia.length - 2;
                 for (let i = 0; i < removeCount; i++) {
-                    sliderImages.removeChild(allImages[i]);
+                    sliderImages.removeChild(allMedia[i]);
                 }
             }
 
@@ -426,19 +457,42 @@
         createIndices();
 
         // Initial setup
-        const initialImg = document.createElement("img");
-        initialImg.src = slides[0].image;
-        document.querySelector(".spotlight-bg-img img").src = slides[0].image;
+        let initialMedia;
+        if (slides[0].type === "video") {
+            initialMedia = document.createElement("video");
+            initialMedia.src = slides[0].image;
+            initialMedia.autoplay = true;
+            initialMedia.loop = true;
+            initialMedia.muted = true;
+            initialMedia.playsInline = true;
 
-        // Força o estado inicial limpo para a primeira imagem do slider
-        gsap.set(initialImg, { opacity: 1, scale: 1, x: 0, y: 0 });
-        sliderImages.appendChild(initialImg);
+            const spotlightVideo = document.createElement("video");
+            spotlightVideo.src = slides[0].image;
+            spotlightVideo.autoplay = true;
+            spotlightVideo.loop = true;
+            spotlightVideo.muted = true;
+            spotlightVideo.playsInline = true;
+            spotlightBgImg.innerHTML = "";
+            spotlightBgImg.appendChild(spotlightVideo);
+        } else {
+            initialMedia = document.createElement("img");
+            initialMedia.src = slides[0].image;
+            if (spotlightBgImgEl) {
+                spotlightBgImgEl.src = slides[0].image;
+                spotlightBgImgEl.style.objectPosition = slides[0].pos;
+            }
+        }
+
+        initialMedia.style.objectPosition = slides[0].pos;
+
+        // Força o estado inicial limpo para a primeira mídia do slider
+        gsap.set(initialMedia, { opacity: 1, scale: 1, x: 0, y: 0 });
+        sliderImages.appendChild(initialMedia);
 
         sliderTitle.innerHTML = `
             <div class="slider-badge">${slides[0].tag}</div>
             <h1>${slides[0].title}</h1>
             <p class="slider-desc">${slides[0].description}</p>
-            <a href="${slides[0].link}" class="slider-btn">Ver Case</a>
         `;
 
         // --- CONTROLE INICIAL VIA JS ---
